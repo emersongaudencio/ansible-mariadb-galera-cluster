@@ -1,0 +1,63 @@
+---
+- name: MySQL/MariaDB Installation
+  hosts: all
+  tasks:
+     - name: Transfer MySQL/MariaDB general instalation script
+       copy: src=/etc/ansible/roles/mysql_install/mysql_install.sh dest=/tmp mode=0777
+
+     - name: MySQL/MariaDB config script
+       copy: src=/etc/ansible/roles/mysql_install/galera/mysql_install_config_galera.sh dest=/tmp mode=0777
+
+     - name: Copy GTID param
+       copy: src=/etc/ansible/roles/mysql_install/galera/GTID dest=/tmp mode=0777
+
+     - name: Copy GALERA_CLUSTER_IPS param
+       copy: src=/etc/ansible/roles/mysql_install/galera/GALERA_CLUSTER_IPS dest=/tmp mode=0777
+
+     - name: Copy GALERA_CLUSTER_NAME param
+       copy: src=/etc/ansible/roles/mysql_install/galera/GALERA_CLUSTER_NAME dest=/tmp mode=0777
+
+     - name: Copy PRIMARY_SERVER param
+       copy: src=/etc/ansible/roles/mysql_install/galera/PRIMARY_SERVER dest=/tmp mode=0777
+
+     - name: Execute MySQL/MariaDB general instalation script
+       command: sh /tmp/mysql_install.sh
+       register: cmd_install
+     - debug: msg="{{ cmd_install.stdout_lines|replace('\\t',' ') }}"
+     - debug: msg="{{ cmd_install.stderr_lines|replace('\\t',' ') }}"
+
+     - name: Execute the script - MySQL/MariaDB config
+       command: sh /tmp/mysql_install_config_galera.sh
+       register: cmd_config
+     - debug: msg="{{ cmd_config.stdout_lines|replace('\\t',' ') }}"
+     - debug: msg="{{ cmd_config.stderr_lines|replace('\\t',' ') }}"
+
+     - name: Remove config script
+       file:
+         path: /tmp/mysql_install_config_galera.sh
+         state: absent
+
+     - name: Remove install script
+       file:
+         path: /tmp/mysql_install.sh
+         state: absent
+
+     - name: Remove GTID file param
+       file:
+         path: /tmp/GTID
+         state: absent
+
+     - name: Remove GALERA_CLUSTER_IPS file param
+       file:
+         path: /tmp/GALERA_CLUSTER_IPS
+         state: absent
+
+     - name: Remove GALERA_CLUSTER_NAME file param
+       file:
+         path: /tmp/GALERA_CLUSTER_NAME
+         state: absent
+
+     - name: Remove PRIMARY_SERVER file param
+       file:
+         path: /tmp/PRIMARY_SERVER
+         state: absent
