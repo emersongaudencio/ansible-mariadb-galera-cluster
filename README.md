@@ -84,11 +84,13 @@
   
   Second parameter: mariadb version
   
-  Third parameter: ip address of the primary server who will be the one that id number for the mariadb galera cluster, please set a number between 1 to 1024
+  Third parameter: ip address of the primary server who will be the one that bootstrap the cluster.
   
-  Fourth parameter: name of the cluster
+  Fourth parameter: id number for the mariadb galera cluster, please set a number between 1 to 1024
   
-  Fifth parameter: list of ip addresses for the machines who will belongs to the cluster.
+  Fifth parameter: name of the cluster
+  
+  Sixth parameter: list of ip addresses for the machines who will belongs to the cluster.
 ```
 
  PS: Just remember that you can do a single installation at the time or a group installation you inform the name of the group in the hosts' files instead of the host itself.
