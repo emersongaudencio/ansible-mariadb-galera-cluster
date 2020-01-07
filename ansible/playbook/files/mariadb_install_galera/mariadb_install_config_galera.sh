@@ -23,11 +23,11 @@ then
  NR_CONNECTIONS=1000
  SORT_MEM='256M'
  SORT_BLOCK="read_rnd_buffer_size                    = 2M
- max_sort_length                         = 1M
- max_length_for_sort_data                = 1M
- read_buffer_size                        = 2M
- mrr_buffer_size                         = 1M
- group_concat_max_len                    = 4096"
+max_sort_length                         = 1M
+max_length_for_sort_data                = 1M
+read_buffer_size                        = 2M
+mrr_buffer_size                         = 1M
+group_concat_max_len                    = 4096"
 else
  INNODB_INSTANCES=8
  INNODB_WRITES=8
@@ -38,16 +38,16 @@ else
  NR_CONNECTIONS=500
  SORT_MEM='128M'
  SORT_BLOCK="read_rnd_buffer_size                    = 131072
- max_sort_length                         = 262144
- max_length_for_sort_data                = 262144
- read_buffer_size                        = 131072
- mrr_buffer_size                         = 131072
- group_concat_max_len                    = 2048"
+max_sort_length                         = 262144
+max_length_for_sort_data                = 262144
+read_buffer_size                        = 131072
+mrr_buffer_size                         = 131072
+group_concat_max_len                    = 2048"
 fi
 
 ### galera parms ###
 GALERA_CLUSTER_NAME=$(cat /tmp/GALERA_CLUSTER_NAME)
-GALERA_CLUSTER_IPS=$(cat /tmp/GALERA_CLUSTER_IPS)
+GALERA_CLUSTER_ADDRESS=$(cat /tmp/GALERA_CLUSTER_ADDRESS)
 PRIMARY_SERVER=$(cat /tmp/PRIMARY_SERVER)
 LOCAL_SERVER_IP=" "
 
@@ -91,6 +91,11 @@ elif [[ "$MARIADB_VERSION" == "103" ]]; then
   CHARACTERSET="utf8mb4"
   MARIADB_BLOCK='######'
 elif [[ "$MARIADB_VERSION" == "104" ]]; then
+  ### collation and character set ###
+  COLLATION="utf8mb4_general_ci"
+  CHARACTERSET="utf8mb4"
+  MARIADB_BLOCK='innodb_large_prefix                     = 1'
+elif [[ "$MARIADB_VERSION" == "105" ]]; then
   ### collation and character set ###
   COLLATION="utf8mb4_general_ci"
   CHARACTERSET="utf8mb4"
@@ -212,7 +217,7 @@ table_open_cache                        = 16384
 table_definition_cache                  = 52428
 max_heap_table_size                     = $TEMP_TABLE_SIZE
 tmp_table_size                          = $TEMP_TABLE_SIZE
-tmpdir                                  = /tmp
+tmpdir                                  = $TMP_DIR
 
 # connection configs
 max_allowed_packet                      = 1G
@@ -296,7 +301,9 @@ sleep 5
 
 
 ### start mysql service ###
-service mysql start
+systemctl enable mariadb.service
+sleep 5
+systemctl start mariadb.service
 sleep 5
 
 ### generate root passwd #####
@@ -428,7 +435,7 @@ wsrep_node_name                         = $LOCAL_SERVER_IP
 wsrep_node_address                      = $LOCAL_SERVER_IP
 wsrep_cluster_name                      = $GALERA_CLUSTER_NAME
 
-wsrep_cluster_address                   = gcomm://$GALERA_CLUSTER_IPS
+wsrep_cluster_address                   = gcomm://$GALERA_CLUSTER_ADDRESS
 wsrep_sst_method                        = mariabackup
 # This user is only used for mariadb-backup SST method
 wsrep_sst_auth                          = $GALERA_USER_NAME:$GALERA_USER_PWD
@@ -445,7 +452,9 @@ inno-apply-opts='--datadir=${DATA_DIR}'
 inno-move-opts='--datadir=${DATA_DIR}'" > /etc/my.cnf.d/galera.cnf
 
 ### start mysql service ###
-service mysql start
+systemctl enable mariadb.service
+sleep 5
+systemctl start mariadb.service
 sleep 5
 
 fi
