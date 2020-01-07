@@ -25,7 +25,7 @@
  Copying the script packages using git:
  ```
  cd /root
- git clone https://github.com/emersongaudencio/ansible-mariadb-install-standalone.git
+ git clone https://github.com/emersongaudencio/ansible-mariadb-galera-cluster.git
  ```
  Alright then after we have installed Ansible and git and clone the git repository. We have to generate ssh heys to share between the Ansible control machine and the database machines. Let see how to do that down below.
 
@@ -112,7 +112,7 @@ yum install git -y
 Copiando o pacote de scripts com git:
 ```
 cd /root
-git clone https://github.com/emersongaudencio/ansible-mariadb-install-standalone.git
+git clone https://github.com/emersongaudencio/ansible-mariadb-galera-cluster.git
 ```
 
 Bom depois de instalar o ansible, git e clonar o repositorio no servidor do ansible, vamos precisar gerar chaves ssh e compartilhar entre o servidor do ansible e o servidor de banco de dados para que possamos executar os scripts do pacote do ansible.
