@@ -81,9 +81,13 @@
 ```
   the script run_mariadb_galera_install.sh has 6 parameters and I'm going to explain the reason why for each one of them, see below :
   First parameter: hostname or group-name listed on hosts files
+  
   Second parameter: mariadb version
-  Third parameter: id number for the mariadb galera cluster, please set a number between 1 to 1024
+  
+  Third parameter: ip address of the primary server who will be the one that id number for the mariadb galera cluster, please set a number between 1 to 1024
+  
   Fourth parameter: name of the cluster
+  
   Fifth parameter: list of ip addresses for the machines who will belongs to the cluster.
 ```
 
