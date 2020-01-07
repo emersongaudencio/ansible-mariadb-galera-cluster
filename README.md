@@ -31,7 +31,7 @@
 
  To generate the keys, keep in mind that is mandatory to generate the keys inside of the directory who was copied from the git repository, see instructions below:
  ```
- cd /root/ansible-mariadb-install-standalone/ansible
+ cd /root/ansible-mariadb-galera-cluster/ansible
  ssh-keygen -f ansible
  ```
  After that you have had generated the keys to copy the keys to the database machines, see instructions below:
@@ -119,7 +119,7 @@ Bom depois de instalar o ansible, git e clonar o repositorio no servidor do ansi
 
 Para gerar as chaves dentro do diretorio que copiou o repositorio de scripts do git:
 ```
-cd /root/ansible-mariadb-install-standalone/ansible
+cd /root/ansible-mariadb-galera-cluster/ansible
 ssh-keygen -f ansible
 ```
 Depois copie a
