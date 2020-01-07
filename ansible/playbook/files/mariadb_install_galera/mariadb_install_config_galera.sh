@@ -15,6 +15,7 @@ NR_CPUS=$(cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l)
 if [[ $NR_CPUS -gt 8 ]]
 then
  INNODB_INSTANCES=$NR_CPUS
+ WSREP_THREADS=16
  INNODB_WRITES=16
  INNODB_READS=16
  INNODB_MIN_IO=200
@@ -30,6 +31,7 @@ mrr_buffer_size                         = 1M
 group_concat_max_len                    = 4096"
 else
  INNODB_INSTANCES=8
+ WSREP_THREADS=8
  INNODB_WRITES=8
  INNODB_READS=8
  INNODB_MIN_IO=200
@@ -366,7 +368,7 @@ wsrep_node_name                         = $LOCAL_SERVER_IP
 wsrep_node_address                      = $LOCAL_SERVER_IP
 wsrep_cluster_name                      = $GALERA_CLUSTER_NAME
 
-wsrep_cluster_address                   = gcomm://$GALERA_CLUSTER_IPS
+wsrep_cluster_address                   = gcomm://$GALERA_CLUSTER_ADDRESS
 wsrep_sst_method                        = mariabackup
 # This user is only used for mariadb-backup SST method
 wsrep_sst_auth                          = $GALERA_USER_NAME:$GALERA_USER_PWD

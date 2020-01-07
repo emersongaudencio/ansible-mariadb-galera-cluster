@@ -6,7 +6,7 @@
        copy: src=mariadb_install_galera/mariadb_install.sh dest=/tmp mode=0777
 
      - name: Transfering MariaDB Configuration script
-       copy: src=mariadb_install_galera/mariadb_install_config.sh dest=/tmp mode=0777
+       copy: src=mariadb_install_galera/mariadb_install_config_galera.sh dest=/tmp mode=0777
 
      - name: Executing MariaDB Installation script
        command: "sh /tmp/mariadb_install.sh {{ mariadb_version }} {{ gtid }} {{ primary_server }} {{ galera_cluster_name }} {{ galera_cluster_address }}"
@@ -27,5 +27,5 @@
 
      - name: Ansible delete - MariaDB config script
        file:
-         path: /tmp/mariadb_install_config.sh
+         path: /tmp/mariadb_install_config_galera.sh
          state: absent

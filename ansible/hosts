@@ -8,7 +8,7 @@
 ## 10.25.1.56
 ## 10.25.1.57
 
-[galera-cluster-servers]
-dbtest01 ansible_ssh_host=172.16.122.135
+[galeracluster]
+dbtest01 ansible_ssh_host=172.16.122.128
 dbtest02 ansible_ssh_host=172.16.122.136
 dbtest03 ansible_ssh_host=172.16.122.137
