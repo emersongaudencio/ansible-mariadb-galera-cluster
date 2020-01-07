@@ -76,12 +76,16 @@
  sh run_mariadb_galera_install.sh dbtest03 103 777 "172.16.122.128" "prd01" "172.16.122.128,172.16.122.136,172.16.122.137"
  ```
 
+  Parameters explanation:
+
+```
   the script run_mariadb_galera_install.sh has 6 parameters and I'm going to explain the reason why for each one of them, see below :
   First parameter: hostname or group-name listed on hosts files
   Second parameter: mariadb version
   Third parameter: id number for the mariadb galera cluster, please set a number between 1 to 1024
   Fourth parameter: name of the cluster
   Fifth parameter: list of ip addresses for the machines who will belongs to the cluster.
+```
 
  PS: Just remember that you can do a single installation at the time or a group installation you inform the name of the group in the hosts' files instead of the host itself.
 
@@ -164,14 +168,22 @@ sh run_mariadb_galera_install.sh dbtest02 103 777 "172.16.122.128" "prd01" "172.
 sh run_mariadb_galera_install.sh dbtest03 103 777 "172.16.122.128" "prd01" "172.16.122.128,172.16.122.136,172.16.122.137"
 ```
 
+Explicacao dos parametros:
+
+```
 O script run_mariadb_galera_install.sh possui 6 parametros e nisso vou explicar a funcao de cada um na sua ordem:
 Primeiro parametro: nome do servidor ou grupo de servidores listado no arquivo hosts do diretorio do ansible
-Segundo parametro: versao do mariadb que deseja instalar.
-Terceiro parametro: numero para representar o id do cluster, escolha entre 1 a 1024.
-Quarto parametro: ip do servidor primario do galera cluster, que no caso sera o que ira fazer o bootstrap do cluster.
-Quinto parametro: nome do cluster , que no caso precisa ser uma string
-Sexto parametro: lista dos ips do servidor que irao fazer para do cluster, se quiser utilizar o dns ao inves do ip o script ira funcionar da mesma maneira.
 
+Segundo parametro: versao do mariadb que deseja instalar.
+
+Terceiro parametro: numero para representar o id do cluster, escolha entre 1 a 1024.
+
+Quarto parametro: ip do servidor primario do galera cluster, que no caso sera o que ira fazer o bootstrap do cluster.
+
+Quinto parametro: nome do cluster , que no caso precisa ser uma string
+
+Sexto parametro: lista dos ips do servidor que irao fazer para do cluster, se quiser utilizar o dns ao inves do ip o script ira funcionar da mesma maneira.
+```
 Obs: Lembrando que tambem eh possivel fazer a instalacao para todo um grupo de servidor de uma soh vez, substituindo o nome do servidor pelo nome do grupo, que no nosso exemplo eh dbservers.
 
 Outra observacao sobre o script eh que as versoes que voce pode instalar sao essas aqui (101, 102, 103, 104, 105).
