@@ -7,8 +7,8 @@
 
  For this, I will be using the scenario described down below:
  ```
- 1 Linux server for ansible
- 1 Linux server for MariaDB (the one that we will install MariaDB using Ansible)
+ 1 Linux server for Ansible
+ 3 Linux servers for MariaDB (the one that we will install MariaDB using Ansible)
  ```
 
  First of all, we have to prepare our Linux environment to use Ansible
@@ -104,7 +104,7 @@ Neste arquivo, venho apresentar e demonstrar como fazer a instalacao do MariaDB 
 Para este post estarei utilizando o seguinte cenario:
 ```
 1 servidor para o ansible
-1 servidor que sera o nosso banco de dados MariaDB
+3 servidores que sera o nosso banco de dados MariaDB
 ```
 
 Primeiramente temos que preparar nosso ambiente para utilizar o Ansible.
