@@ -141,7 +141,6 @@ hash=`md5sum  /tmp/$passwd | awk '{print $1}' | sed -e 's/^[[:space:]]*//' | tr 
 echo "[client]
 port                                    = 3306
 socket                                  = /var/lib/mysql/mysql.sock
-prompt                                  = '(\u@\h) MariaDB[\d]>\_'
 
 [mysqld]
 server-id                               = $SERVERID
@@ -327,6 +326,7 @@ mysqladmin -u root password $hash
 echo "[client]
 user            = root
 password        = $hash
+# prompt        = '(\u@\h) MariaDB[\d]>\_'
 
 [mysql]
 user            = root
