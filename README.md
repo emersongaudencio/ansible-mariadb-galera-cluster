@@ -76,22 +76,16 @@
  sh run_mariadb_galera_install.sh dbtest03 103 777 "172.16.122.128" "prd01" "172.16.122.128,172.16.122.136,172.16.122.137"
  ```
 
-  Parameters explanation:
-
-```
-  the script run_mariadb_galera_install.sh has 6 parameters and I'm going to explain the reason why for each one of them, see below :
-  First parameter: hostname or group-name listed on hosts files
-  
-  Second parameter: mariadb version
-  
-  Third parameter: ip address of the primary server who will be the one that bootstrap the cluster.
-  
-  Fourth parameter: id number for the mariadb galera cluster, please set a number between 1 to 1024
-  
-  Fifth parameter: name of the cluster
-  
-  Sixth parameter: list of ip addresses for the machines who will belongs to the cluster.
-```
+### Parameters specification:
+#### run_mariadb_galera_install.sh
+Parameter    | Value           | Mandatory   | Order        | Accepted values
+------------ | ------------- | ------------- | ------------- | -------------
+hostname or group-name listed on hosts files | dbtest01 | Yes | 1 | hosts who are placed inside of the hosts  file
+db mariadb version | 103 | Yes | 2 | 101, 102, 103, 104, 105
+mariadb galera cluster gtid | 777 | Yes | 3 | integer unique number between 1 to 1024 to identify gtid mariadb galera cluster
+db mariadb galera primary server address | 172.16.122.128 | Yes | 4 | primary server ip address or dns name respective for
+mariadb galera cluster name | prd01 | Yes | 5 | unique name to identify mariadb galera cluster
+mariadb galera cluster members | 172.16.122.128,172.16.122.136,172.16.122.137 | Yes | 6 | list of ip addresses for the machines who will belongs to the cluster
 
  PS: Just remember that you can do a single installation at the time or a group installation you inform the name of the group in the hosts' files instead of the host itself.
 
