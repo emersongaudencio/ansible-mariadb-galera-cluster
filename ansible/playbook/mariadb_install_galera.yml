@@ -1,5 +1,6 @@
 ---
 - name: MariaDB Galera Cluster Installation
+  gather_facts: false
   hosts: all
   tasks:
      - name: Transfering MariaDB install script
