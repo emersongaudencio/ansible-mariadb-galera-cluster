@@ -326,11 +326,11 @@ mysqladmin -u root password $hash
 echo "[client]
 user            = root
 password        = $hash
-# prompt        = '(\u@\h) MariaDB[\d]>\_'
 
 [mysql]
 user            = root
 password        = $hash
+prompt          = '(\u@\h) MariaDB [\d]>\_'
 
 [mysqladmin]
 user            = root
