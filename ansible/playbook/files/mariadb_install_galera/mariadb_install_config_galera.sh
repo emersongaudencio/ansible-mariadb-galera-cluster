@@ -77,7 +77,7 @@ done
 ### datadir and logdir ####
 DATA_DIR="/var/lib/mysql/datadir"
 DATA_LOG="/var/lib/mysql-logs"
-TMP_DIR="/tmp"
+TMP_DIR="/var/lib/mysql-tmp"
 
 if [ "$MARIADB_VERSION" == "101" ]; then
   ### collation and character set ###
@@ -267,8 +267,7 @@ performance-schema-consumer-events-stages-history=ON
 performance-schema-consumer-events-stages-history-long=ON
 " > /etc/my.cnf.d/server.cnf
 
-### restart mysql service to apply new config file generate in this stage ###
-#killall mysqld
+### restart mysql service to apply new config file generate it at this stage ###
 pid_mysql=$(pidof mysqld)
 if [[ $pid_mysql -gt 1 ]]
 then
@@ -301,6 +300,15 @@ else
     chown -Rf mysql.mysql ${DATA_LOG}
 fi
 
+if [ ! -d ${TMP_DIR} ]
+then
+    mkdir -p ${TMP_DIR}
+    chmod 755 ${TMP_DIR}
+    chown -Rf mysql.mysql ${TMP_DIR}
+else
+    chown -Rf mysql.mysql ${TMP_DIR}
+fi
+
 if [[ $PRIMARY == "OK" ]]
 then
 
@@ -308,12 +316,11 @@ then
 mysql_install_db --user=mysql --skip-name-resolve --force --defaults-file=/etc/my.cnf.d/server.cnf
 sleep 5
 
-
 ### start mysql service ###
 systemctl enable mariadb.service
-sleep 5
+sleep 1
 systemctl start mariadb.service
-sleep 5
+sleep 1
 
 ### generate root passwd #####
 echo The server_id is $SERVERID and the gt_domain_id is $GTID!
@@ -351,8 +358,7 @@ password        = $hash
 #################################################################
 " > /root/.my.cnf
 
-### restart mysql service to apply new config file generate in this stage ###
-#killall mysqld
+### restart mysql service to apply new config file generate it at this stage ###
 pid_mysql=$(pidof mysqld)
 if [[ $pid_mysql -gt 1 ]]
 then
