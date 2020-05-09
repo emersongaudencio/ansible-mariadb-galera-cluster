@@ -3,6 +3,10 @@ echo "HOSTNAME: " `hostname`
 echo "BEGIN - [`date +%d/%m/%Y" "%H:%M:%S`]"
 echo "##############"
 echo "$1" > /tmp/MARIADB_VERSION
+echo "$2" > /tmp/GTID
+echo "$3" > /tmp/PRIMARY_SERVER
+echo "$4" > /tmp/GALERA_CLUSTER_NAME
+echo "$5" > /tmp/GALERA_CLUSTER_ADDRESS
 MARIADB_VERSION=$(cat /tmp/MARIADB_VERSION)
 
 ##### FIREWALLD DISABLE ########################
