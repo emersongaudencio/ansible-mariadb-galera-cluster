@@ -56,6 +56,20 @@ PRIMARY_SERVER=$(cat /tmp/PRIMARY_SERVER)
 LOCAL_SERVER_IP=" "
 
 ### check the ips address of the machines used on the cluster env ###
+hostname=${PRIMARY_SERVER}
+if [[ $hostname =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+    PRIMARY_SERVER=$hostname
+    echo "IP: $PRIMARY_SERVER"
+else
+    PRIMARY_SERVER=`resolveip -s $hostname`
+    if [ -n "$PRIMARY_SERVER" ]; then
+        echo "IP: $PRIMARY_SERVER"
+    else
+        echo "Could not resolve hostname."
+    fi
+fi
+
+### check the ips address of the machines used on the cluster env ###
 ips=($(hostname -I))
 for ip in "${ips[@]}"
 do
@@ -64,12 +78,14 @@ do
     LOCAL_SERVER_IP=$ip
     PRIMARY="OK"
     echo $LOCAL_SERVER_IP
+    echo "$PRIMARY is a Primary!"
  else
     if [ "$LOCAL_SERVER_IP" == " " ];
     then
     LOCAL_SERVER_IP=$ip
     PRIMARY="NO"
     echo $LOCAL_SERVER_IP
+    echo "$PRIMARY is not a Primary!"
     fi
  fi
 done
@@ -163,6 +179,10 @@ lower_case_table_names                  = 1
 default-storage-engine                  = InnoDB
 optimizer_switch                        = 'index_merge_intersection=off'
 bulk_insert_buffer_size                 = 128M
+
+# files limits
+open_files_limit                        = 102400
+innodb_open_files                       = 65536
 
 query_cache_size                        = 0
 query_cache_type                        = 0
