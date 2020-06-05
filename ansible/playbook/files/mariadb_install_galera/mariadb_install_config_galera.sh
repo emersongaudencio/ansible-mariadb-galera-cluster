@@ -111,26 +111,31 @@ if [ "$MARIADB_VERSION" == "101" ]; then
   COLLATION="utf8_general_ci"
   CHARACTERSET="utf8"
   MARIADB_BLOCK='innodb_large_prefix                     = 1'
+  WS_PROV="/usr/lib64/galera/libgalera_smm.so"
 elif [[ "$MARIADB_VERSION" == "102" ]]; then
   ### collation and character set ###
   COLLATION="utf8_general_ci"
   CHARACTERSET="utf8"
   MARIADB_BLOCK='innodb_large_prefix                     = 1'
+  WS_PROV="/usr/lib64/galera/libgalera_smm.so"
 elif [[ "$MARIADB_VERSION" == "103" ]]; then
   ### collation and character set ###
   COLLATION="utf8mb4_general_ci"
   CHARACTERSET="utf8mb4"
   MARIADB_BLOCK='######'
+  WS_PROV="/usr/lib64/galera/libgalera_smm.so"
 elif [[ "$MARIADB_VERSION" == "104" ]]; then
   ### collation and character set ###
   COLLATION="utf8mb4_general_ci"
   CHARACTERSET="utf8mb4"
   MARIADB_BLOCK='innodb_large_prefix                     = 1'
+  WS_PROV="/usr/lib64/galera-4/libgalera_smm.so"
 elif [[ "$MARIADB_VERSION" == "105" ]]; then
   ### collation and character set ###
   COLLATION="utf8mb4_general_ci"
   CHARACTERSET="utf8mb4"
   MARIADB_BLOCK='innodb_large_prefix                     = 1'
+  WS_PROV="/usr/lib64/galera-4/libgalera_smm.so"
 fi
 
 ### galera standard users ##
@@ -345,7 +350,7 @@ then
 
 ### mysql_install_db for deploy a new db fresh and clean ###
 mysql_install_db --user=mysql --skip-name-resolve --force --defaults-file=/etc/my.cnf.d/server.cnf
-sleep 5
+sleep 3
 
 ### start mysql service ###
 systemctl enable mariadb.service
@@ -363,7 +368,7 @@ echo The $MYSQLCHK_USER_NAME password is $MYSQLCHK_USER_PWD
 ### update root password #####
 mysqladmin -u root password $hash
 
-### generate it the user file on root account linux #####
+### generate user file on root account linux #####
 echo "[client]
 user            = root
 password        = $hash
@@ -397,14 +402,14 @@ kill -15 $pid_mysql
 fi
 sleep 10
 
-### generate it the galera.cnf file #####
+### generate galera.cnf file #####
 echo "#
 # MariaDB Galera configuration
 #
 
 [mariadb]
 wsrep_on                                = ON
-wsrep_provider                          = /usr/lib64/galera/libgalera_smm.so
+wsrep_provider                          = $WS_PROV
 wsrep_provider_options                  = 'gcache.size=2G; gmcast.segment=1; gcache.dir=${DATA_DIR}; gcache.recover=yes; cert.log_conflicts=yes; socket.checksum=1; gcs.fc_limit=256; gcs.fc_factor=0.99; gcs.fc_master_slave=yes; evs.version=1; evs.delay_margin=PT1S; evs.delayed_keep_period=PT1M; evs.auto_evict=5;'
 wsrep_log_conflicts                     = ON
 wsrep_retry_autocommit                  = 2
@@ -441,7 +446,7 @@ mysql -e "flush privileges;"
 
 else
 
-### generate it the user file on root account linux #####
+### generate user file on root account linux #####
 echo "[client]
 user            = root
 password        = $hash
@@ -467,14 +472,14 @@ password        = $hash
 #################################################################
 " > /root/.my.cnf
 
-### generate it the galera.cnf file #####
+### generate galera.cnf file #####
 echo "#
 # MariaDB Galera configuration
 #
 
 [mariadb]
 wsrep_on                                = ON
-wsrep_provider                          = /usr/lib64/galera/libgalera_smm.so
+wsrep_provider                          = $WS_PROV
 wsrep_provider_options                  = 'gcache.size=2G; gmcast.segment=1; gcache.dir=${DATA_DIR}; gcache.recover=yes; cert.log_conflicts=yes; socket.checksum=1; gcs.fc_limit=256; gcs.fc_factor=0.99; gcs.fc_master_slave=yes; evs.version=1; evs.delay_margin=PT1S; evs.delayed_keep_period=PT1M; evs.auto_evict=5;'
 wsrep_log_conflicts                     = ON
 wsrep_retry_autocommit                  = 2
