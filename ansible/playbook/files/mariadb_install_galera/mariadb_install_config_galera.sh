@@ -25,12 +25,12 @@ NR_CPUS=$(cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l)
 
 if [[ $NR_CPUS -gt 8 ]]
 then
- INNODB_INSTANCES=$NR_CPUS
+ INNODB_INSTANCES=16
  WSREP_THREADS=16
  INNODB_WRITES=16
  INNODB_READS=16
  INNODB_MIN_IO=200
- INNODB_MAX_IO=800
+ INNODB_MAX_IO=2000
  TEMP_TABLE_SIZE='16M'
  NR_CONNECTIONS=1000
  NR_CONNECTIONS_USER=950
@@ -47,7 +47,7 @@ else
  INNODB_WRITES=8
  INNODB_READS=8
  INNODB_MIN_IO=200
- INNODB_MAX_IO=300
+ INNODB_MAX_IO=800
  TEMP_TABLE_SIZE='16M'
  NR_CONNECTIONS=500
  NR_CONNECTIONS_USER=450
@@ -209,11 +209,15 @@ thread_cache_size                       = 300
 # logbin configs
 log-bin                                 = $DATA_LOG/mysql-bin
 binlog_format                           = ROW
+binlog_row_image                        = MINIMAL
 binlog_checksum                         = CRC32
 expire_logs_days                        = 5
 log_bin_trust_function_creators         = 1
 sync_binlog                             = 1
 log_slave_updates                       = 1
+master_info_repository                  = TABLE
+relay_log_info_repository               = TABLE
+relay_log_recovery                      = 1
 
 relay_log                               = $DATA_LOG/mysql-relay-bin
 relay_log_purge                         = 1
@@ -430,8 +434,7 @@ wsrep_gtid_domain_id                    = $GTID
 wsrep_gtid_mode                         = ON
 
 [sst]
-inno-apply-opts='--use-memory=4G'
-inno-apply-opts='--datadir=${DATA_DIR}'
+inno-apply-opts='--use-memory=1024M --datadir=${DATA_DIR}'
 inno-move-opts='--datadir=${DATA_DIR}'" > /etc/my.cnf.d/galera.cnf
 
 ### start mysql with galera_new_cluster to inicialize the cluster on the primary server ###
@@ -442,6 +445,7 @@ sleep 3
 mysql -e "GRANT REPLICATION SLAVE ON *.* TO '$REPLICATION_USER_NAME'@'%' IDENTIFIED BY '$REPLICATION_USER_PWD';";
 mysql -e "GRANT SELECT, INSERT, CREATE, RELOAD, PROCESS, SUPER, LOCK TABLES, REPLICATION CLIENT ON *.* TO '$GALERA_USER_NAME'@'localhost' IDENTIFIED BY '$GALERA_USER_PWD';"
 mysql -e "GRANT PROCESS ON *.* TO '$MYSQLCHK_USER_NAME'@'localhost' IDENTIFIED BY '$MYSQLCHK_USER_PWD';";
+mysql -e "GRANT PROCESS ON *.* TO '$MYSQLCHK_USER_NAME'@'%' IDENTIFIED BY '$MYSQLCHK_USER_PWD';";
 mysql -e "flush privileges;"
 
 else
@@ -500,8 +504,7 @@ wsrep_gtid_domain_id                    = $GTID
 wsrep_gtid_mode                         = ON
 
 [sst]
-inno-apply-opts='--use-memory=4G'
-inno-apply-opts='--datadir=${DATA_DIR}'
+inno-apply-opts='--use-memory=1024M --datadir=${DATA_DIR}'
 inno-move-opts='--datadir=${DATA_DIR}'" > /etc/my.cnf.d/galera.cnf
 
 ### start mysql service ###
