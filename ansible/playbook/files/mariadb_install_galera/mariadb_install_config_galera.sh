@@ -3,6 +3,7 @@
 # To generate a random number in a UNIX or Linux shell, the shell maintains a shell variable named RANDOM. Each time this variable is read, a random number between 0 and 32767 is generated.
 SERVERID=$(($RANDOM))
 GTID=$(cat /tmp/GTID)
+CLIENT_PREFFIX="MariaDBGalera"
 ##### Checking MariaDB Version #####
 MARIADB_VERSION=`mysql --version |awk -F "-" {'print $1'}|awk -F "." {'print $1$2$3'} | awk {'print $5'}`
 
@@ -144,19 +145,19 @@ REPLICATION_USER_NAME="replication_user"
 MYSQLCHK_USER_NAME="mysqlchk"
 
 ### generate galera passwd #####
-RD_GALERA_USER_PWD="wsrepsst-$GTID"
+RD_GALERA_USER_PWD="$CLIENT_PREFFIX-wsrepsst-$GTID"
 touch /tmp/$RD_GALERA_USER_PWD
 echo $RD_GALERA_USER_PWD > /tmp/$RD_GALERA_USER_PWD
 HASH_GALERA_USER_PWD=`md5sum  /tmp/$RD_GALERA_USER_PWD | awk '{print $1}' | sed -e 's/^[[:space:]]*//' | tr -d '/"/'`
 
 ### generate replication passwd #####
-RD_REPLICATION_USER_PWD="replication-$GTID"
+RD_REPLICATION_USER_PWD="$CLIENT_PREFFIX-replication-$GTID"
 touch /tmp/$RD_REPLICATION_USER_PWD
 echo $RD_REPLICATION_USER_PWD > /tmp/$RD_REPLICATION_USER_PWD
 HASH_REPLICATION_USER_PWD=`md5sum  /tmp/$RD_REPLICATION_USER_PWD | awk '{print $1}' | sed -e 's/^[[:space:]]*//' | tr -d '/"/'`
 
 ### generate mysqlchk passwd #####
-RD_MYSQLCHK_USER_PWD="mysqlchk-$GTID"
+RD_MYSQLCHK_USER_PWD="$CLIENT_PREFFIX-mysqlchk-$GTID"
 touch /tmp/$RD_MYSQLCHK_USER_PWD
 echo $RD_MYSQLCHK_USER_PWD > /tmp/$RD_MYSQLCHK_USER_PWD
 HASH_MYSQLCHK_USER_PWD=`md5sum  /tmp/$RD_MYSQLCHK_USER_PWD | awk '{print $1}' | sed -e 's/^[[:space:]]*//' | tr -d '/"/'`
@@ -167,10 +168,12 @@ GALERA_USER_PWD=$HASH_GALERA_USER_PWD
 MYSQLCHK_USER_PWD=$HASH_MYSQLCHK_USER_PWD
 
 ### generate root passwd #####
-passwd="root-$GTID"
+passwd="$CLIENT_PREFFIX-root-$GTID"
 touch /tmp/$passwd
 echo $passwd > /tmp/$passwd
 hash=`md5sum  /tmp/$passwd | awk '{print $1}' | sed -e 's/^[[:space:]]*//' | tr -d '/"/'`
+hash=`echo ${hash:0:8} | tr  '[a-z]' '[A-Z]'`${hash:8}
+hash=$hash\!\$
 
 echo "[client]
 port                                    = 3306
@@ -397,6 +400,7 @@ password        = $hash
 #The $MYSQLCHK_USER_NAME password is $MYSQLCHK_USER_PWD
 #################################################################
 " > /root/.my.cnf
+chmod 400 /root/.my.cnf
 
 ### restart mysql service to apply new config file generate it at this stage ###
 pid_mysql=$(pidof mysqld)
@@ -475,6 +479,7 @@ password        = $hash
 #The $MYSQLCHK_USER_NAME password is $MYSQLCHK_USER_PWD
 #################################################################
 " > /root/.my.cnf
+chmod 400 /root/.my.cnf
 
 ### generate galera.cnf file #####
 echo "#
@@ -514,3 +519,6 @@ systemctl start mariadb.service
 sleep 1
 
 fi
+
+### REMOVE TMP FILES on /tmp #####
+rm -rf /tmp/*
