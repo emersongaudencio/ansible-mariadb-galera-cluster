@@ -450,6 +450,10 @@ mysql -e "GRANT REPLICATION SLAVE ON *.* TO '$REPLICATION_USER_NAME'@'%' IDENTIF
 mysql -e "GRANT SELECT, INSERT, CREATE, RELOAD, PROCESS, SUPER, LOCK TABLES, REPLICATION CLIENT ON *.* TO '$GALERA_USER_NAME'@'localhost' IDENTIFIED BY '$GALERA_USER_PWD';"
 mysql -e "GRANT PROCESS ON *.* TO '$MYSQLCHK_USER_NAME'@'localhost' IDENTIFIED BY '$MYSQLCHK_USER_PWD';";
 mysql -e "GRANT PROCESS ON *.* TO '$MYSQLCHK_USER_NAME'@'%' IDENTIFIED BY '$MYSQLCHK_USER_PWD';";
+mysql -e "DELETE FROM mysql.user WHERE User='';";
+mysql -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
+mysql -e "UPDATE mysql.user SET Password=PASSWORD('$hash') WHERE User='root';"
+mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'127.0.0.1' IDENTIFIED BY '$hash' WITH GRANT OPTION;"
 mysql -e "flush privileges;"
 
 else
